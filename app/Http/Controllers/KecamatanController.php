@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\City;
+use App\Models\Kelurahan;
 use App\Models\Kecamatan;
 use Symfony\Component\HttpFoundation\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -85,6 +86,42 @@ class KecamatanController extends Controller
         ];
 
         return response()->json($response, Response::HTTP_OK);
+    }
+
+    public function edit($id)
+    {
+        View::share('breadcrumbs', [
+            [$this->title, route('kecamatan.index')],
+            ['Edit '.$this->title, null]
+        ]);
+        
+        $data           = $this->model->where('kecamatan_id', $id)->first();
+        $kelurahans     = Kelurahan::select('*')->orderBy('name', 'asc')->get();
+        return view($this->view.'edit', compact('data', 'id', 'kelurahans'));
+    }
+
+    public function update(Request $req, $id)
+    {
+        try {
+
+            $input = ([
+                'kelurahan_id'  => $req->kelurahan_id,
+                'name'          => $req->name
+            ]);
+
+            $data = $this->model->where('kecamatan_id', $id);
+            if($data->update($input)){
+
+                Alert::success('Success', 'Data telah berhasil diupdated');
+                return redirect()->route('kecamatan.index');
+            }
+
+            Alert::error('Gagal', 'Data gagal diupdate');
+            return redirect()->back()->withInput();
+        } catch (\Exception $e) {
+            Alert::error('Gagal', $e->getMessage());
+            return redirect()->back();
+        }
     }
 
     public function destroy($id)

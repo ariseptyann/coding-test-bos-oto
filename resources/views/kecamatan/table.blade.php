@@ -18,7 +18,7 @@
             </th>
             <th>
                 <div class="form-group">
-                    <select class="select2 form-control" name="city_id" style="width: 100%">
+                    <select class="select2 form-control" name="city_id">
                         <option value="">Pilih City</option>
                         @foreach ($citys as $item)
                             <option value="{{ $item->city_id }}">{{ $item->name }}</option>
@@ -57,9 +57,9 @@
                         <i class="la la-ellipsis-h"></i>
                     </a>
                     <div class="dropdown-menu">
-                        {{-- <a class="dropdown-item" href="${url}/${data}/edit">
+                        <a class="dropdown-item" href="{{ route('kecamatan.index') }}/{{ $item->id }}/edit">
                             <i class="la la-edit"></i> Edit
-                        </a> --}}
+                        </a>
                         <form action="{{ route('kecamatan.index') }}/{{ $item->id }}" method="post" class="form-inline">
                             @method('DELETE') @csrf
                             <button class="dropdown-item delete-from-table">
